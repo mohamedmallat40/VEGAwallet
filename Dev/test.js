@@ -7,3 +7,5 @@ Vegacoin.creatnewtransaction(500,'fakhry','hamdi');
 Vegacoin.creatnewblock(34646,'iucgiudshcomi','mlddwmkvkdnvs');
 Vegacoin.creatnewtransaction(200,'fakhry','hamdi');
 console.log(Vegacoin);
+
+//addddddd
