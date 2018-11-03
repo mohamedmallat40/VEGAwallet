@@ -1,3 +1,4 @@
+const sha256= require('sha256');
 function Blockchain(){
   this.chain = [];
   this.pendingtransaction= [];
@@ -27,5 +28,10 @@ function Blockchain(){
     };
     this.pendingtransaction.push(newtransaction); // pending transactions mazelou mahoumchy validated yet
       return this.getlastblock()['index'] + 1;
+   }
+   Blockchain.prototype.hashblock= function(previousblockhash,correntblockdata,nonce){
+     const dataasstring= previousblockhash + nonce.toString() + JSON.stringify(correntblockdata);// na7wlou les trois parametres l type string
+     const hash = sha256(dataasstring);
+     return hash;
    }
 module.exports = Blockchain;

@@ -2,10 +2,22 @@ const Blockchain= require('./Blockchain')
 const Vegacoin = new Blockchain();
 Vegacoin.creatnewblock(644654,'azertqsdfg','azersdfgbgbd');
 Vegacoin.creatnewtransaction(20,'sadik','mohamed');
-Vegacoin.creatnewtransaction(30,'sadok','tarek');
-Vegacoin.creatnewtransaction(500,'fakhry','hamdi');
-Vegacoin.creatnewblock(34646,'iucgiudshcomi','mlddwmkvkdnvs');
-Vegacoin.creatnewtransaction(200,'fakhry','hamdi');
-console.log(Vegacoin);
+const previousblockhash='azertghxj';
+const correntblockdata=[
+  {
+    amount:100,
+    sender:'sadok',
+    recipient:'mohamed'
+  },
+  {
+    amount:50,
+    sender:'tarek',
+    recipient:'mohamed'
+  },
+];
+const nonce=100;
+Vegacoin.hashblock();
+console.log(Vegacoin.hashblock(previousblockhash,correntblockdata,nonce));
+
 
 //addddddd
