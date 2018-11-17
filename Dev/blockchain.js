@@ -1,6 +1,5 @@
 const sha256= require('sha256');
 
-
 function Blockchain() {
     this.chain = [];
     this.pendingtransaction= [];
@@ -31,7 +30,7 @@ function Blockchain() {
     const newtransaction = {
       amount:amount, //9adeh chyab3eth
       sender:sender, // address mta3 ly chyab3eth
-      recipient:recipient // add mta3 li chte9bel
+      recipient:recipient // add mta3 li chye9bel
     };
 
     this.pendingtransaction.push(newtransaction); // pending transactions mazelou mahoumchy validated yet
