@@ -1,8 +1,11 @@
 const sha256= require('sha256');
+const currentNodeUrl = process.argv[3];
 
 function Blockchain() {
     this.chain = [];
     this.pendingtransaction= [];
+    this.currentNodeUrl=currentNodeUrl;
+    this.networknode = []; 
     this.creatnewblock(100,'0','0'); //every blockchain starter with first block ( genisis block)
 
 }

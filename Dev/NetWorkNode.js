@@ -4,12 +4,11 @@ const bodyparser = require('body-parser');
 const blockchain =require('./blockchain');
 const Vegawallet=new blockchain();
 const uuid = require('uuid/v1');
-
-const  nodeID =uuid().split('-').join('');
+const nodeID =uuid().split('-').join('');
+const port = process.argv[2];
 
 app.use (bodyparser.json()); 
-app.use (bodyparser.urlencoded({extanded:false}));
-
+app.use (bodyparser.urlencoded({extended:false}));
 
     app.get('/blockchain', function (req, res) {
      res.send(Vegawallet);
@@ -22,7 +21,6 @@ app.use (bodyparser.urlencoded({extanded:false}));
     */
  const blockindex =  Vegawallet.creatnewtransaction(req.body.amount, req.body.sender, req.body.recipient);
     res.json({note: `Transacton will be added in block ${blockindex}`});
-
 });
 
 
@@ -41,9 +39,27 @@ app.get('/mine', function(req,res){
         res.json({
             note: "new block mined successfuly",
             block: newblock
-        })
+        });
 });
 
-app.listen(3000, function(){
-    console.log('listing on port 3000...');
+//register a node and broadcast itthe network
+app.post('/register-and-broadcast-node', function(req,res){
+    const newNodeUrl =req.body.newNodeUrl;
+
+});
+
+//register a node with the network
+app.post('/regester-node', function(req,res){
+
+});
+
+//register multupile nodes at ones 
+app.post('/register-nodes-bulk', function(req,res){
+
+
+});
+
+
+app.listen(port, function(){
+    console.log(`listing on port ${port}...`);
 });
