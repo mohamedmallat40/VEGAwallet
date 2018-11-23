@@ -6,6 +6,8 @@ const Vegawallet=new blockchain();
 const uuid = require('uuid/v1');
 const nodeID =uuid().split('-').join('');
 const port = process.argv[2];
+const rp = require('request-promise');
+
 
 app.use (bodyparser.json()); 
 app.use (bodyparser.urlencoded({extended:false}));
@@ -40,12 +42,37 @@ app.get('/mine', function(req,res){
             note: "new block mined successfuly",
             block: newblock
         });
-});
+    });
 
 //register a node and broadcast itthe network
 app.post('/register-and-broadcast-node', function(req,res){
     const newNodeUrl =req.body.newNodeUrl;
-
+    if (vegawallet.networknode.indexof(newNodeUrl)==-1)Vegawallet.networknode.push(newNodeUrl);
+        const regnodespromises=[];
+        vegawallet.networknode.array.forEach(networknodeUrl => {
+            //register node and point
+            const requestoption ={
+                uri: networknodeUrl +'/register-node',
+                methode: 'post',
+                body: { newNodeUrl:newNodeUrl},
+                json: true
+                
+            };
+        regnodepromises.push(rq(requestoption));
+        }); 
+    Promise.all(regnodespromises)
+    .then(data => {
+        const bulkregesteroptions = {
+            uri : newNodeUrl+'/regester-nodes-bulk',
+            methode : post,
+            body: {allnetworknodes:[...vegawallet.networknode,Vegawallet.currentNodeUrl]},
+            json : true
+        };
+        return rp(bulkregesteroptions);
+    })
+    .then(data =>{
+        res.json({note: 'new node regester with network succefuly'});
+    });
 });
 
 //register a node with the network
