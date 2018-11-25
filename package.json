@@ -8,7 +8,8 @@
     "Node_1": "nodemon --watch dev -e js dev/NetWorkNode.js 3001 http//:localhost:3001",
     "Node_2": "nodemon --watch dev -e js dev/NetWorkNode.js 3002 http//:localhost:3002",
     "Node_3": "nodemon --watch dev -e js dev/NetWorkNode.js 3003 http//:localhost:3003",
-    "Node_4": "nodemon --watch dev -e js dev/NetWorkNode.js 3004 http//:localhost:3004"
+    "Node_4": "nodemon --watch dev -e js dev/NetWorkNode.js 3004 http//:localhost:3004",
+    "Node_4": "nodemon --watch dev -e js dev/NetWorkNode.js 3005 http//:localhost:3005"
   },
   "author": "",
   "license": "ISC",
@@ -17,7 +18,9 @@
     "express": "^4.16.4",
     "nodemon": "^1.18.6",
     "premise": "^1.0.0",
+    "promise": "^8.0.2",
     "request": "^2.88.0",
+    "request-promise": "^4.2.2",
     "sha256": "^0.2.0",
     "uuid": "^3.3.2"
   }

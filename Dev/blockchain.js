@@ -5,7 +5,7 @@ function Blockchain() {
     this.chain = [];
     this.pendingtransaction= [];
     this.currentNodeUrl=currentNodeUrl;
-    this.networknode = []; 
+    this.networknodes = []; 
     this.creatnewblock(100,'0','0'); //every blockchain starter with first block ( genisis block)
 
 }

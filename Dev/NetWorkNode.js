@@ -16,14 +16,18 @@ app.use (bodyparser.urlencoded({extended:false}));
      res.send(Vegawallet);
 });
 
+
+
 //creat a new transaction
     app.post('/transaction', function (req, res){
         /*console.log(req.body);
     res.send(`the amount of transactio is ${req.body} Vegawallet`);
     */
+
  const blockindex =  Vegawallet.creatnewtransaction(req.body.amount, req.body.sender, req.body.recipient);
     res.json({note: `Transacton will be added in block ${blockindex}`});
 });
+
 
 
     // mine a block
@@ -44,47 +48,73 @@ app.get('/mine', function(req,res){
         });
     });
 
+
+
+
 //register a node and broadcast itthe network
 app.post('/register-and-broadcast-node', function(req,res){
     const newNodeUrl =req.body.newNodeUrl;
-    if (vegawallet.networknode.indexof(newNodeUrl)==-1)Vegawallet.networknode.push(newNodeUrl);
+    if (vegawallet.networknode.indexOf(newNodeUrl)== -1)Vegawallet.networknode.push(newNodeUrl);
+
         const regnodespromises=[];
         vegawallet.networknode.array.forEach(networknodeUrl => {
             //register node and point
-            const requestoption ={
+            const requestOption ={
                 uri: networknodeUrl +'/register-node',
                 methode: 'post',
-                body: { newNodeUrl:newNodeUrl},
+                body: { newNodeUrl: newNodeUrl},
                 json: true
                 
             };
-        regnodepromises.push(rq(requestoption));
+
+            regnodepromises.push(rq(requestOption));
+
         }); 
+
     Promise.all(regnodespromises)
-    .then(data => {
-        const bulkregesteroptions = {
-            uri : newNodeUrl+'/regester-nodes-bulk',
-            methode : post,
-            body: {allnetworknodes:[...vegawallet.networknode,Vegawallet.currentNodeUrl]},
-            json : true
+        .then(data => {
+            const bulkRegisterOption = {
+                uri : newNodeUrl+'/regester-nodes-bulk',
+                methode : post,
+                body: {allnetworknodes:[...vegawallet.networknodes,Vegawallet.currentNodeUrl]},
+                json : true
         };
-        return rp(bulkregesteroptions);
+        return rp(bulkRegisterOption);
     })
     .then(data =>{
         res.json({note: 'new node regester with network succefuly'});
     });
 });
 
-//register a node with the network
-app.post('/regester-node', function(req,res){
 
-});
+
+
+//register a node with the network
+app.post('/register-node', function(req,res){
+    const newNodeUrl = req.body.newNodeUrl;
+    const nodenotalreadypreast = Vegawallet.networknodes.indexOf(newNodeUrl) == -1;
+    const notecurrentnode = Vegawallet.currentNodeUrl !== newNodeUrl;
+    if  (nodenotalreadypreast && notecurrentnode)Vegawallet.networknodes.push(newNodeUrl);
+    res.json({  note : 'new node regestered successfully.  '}); // bech n7outo node jdida fi arrey mta3 nodes
+                                                                 // if bech ntastiw beha ken node déja fil arrey
+    });
+
+
 
 //register multupile nodes at ones 
 app.post('/register-nodes-bulk', function(req,res){
+    const allnetworknodes = req.body.allnetworknodes;
+    allnetworknodes.forEach(networknodeUrl=> {
+const nodenotalreadypreast =  Vegawallet.networknodes.indexOf(networknodeUrl) == -1 ;
+const notcurrentnode = Vegawallet.currentNodeUrl !== networknodeUrl;       
+if (nodenotalreadypreast && notcurrentnode) Vegawallet.networknodes.push(networknodeUrl);
 
+    })
+    res.json({ note: 'bulk registration successfuly.'});
 
 });
+
+
 
 
 app.listen(port, function(){
