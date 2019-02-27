@@ -12,7 +12,10 @@ const rp = require('request');
 app.use (bodyparser.json()); //
 app.use (bodyparser.urlencoded({extended:false})); 
 
-    app.get('/blockchain', function (req, res) {
+   
+
+
+app.get('/blockchain', function (req, res) {
      res.send(Vegawallet);
 });
 
@@ -20,13 +23,34 @@ app.use (bodyparser.urlencoded({extended:false}));
 
 //creat a new transaction
     app.post('/transaction', function (req, res){
-        /*console.log(req.body);
-    res.send(`the amount of transactio is ${req.body} Vegawallet`);
-    */
+    const newtransaction= req.body;
+    const blockIndex = Vegawallet.AddTransactionToPendingTransactions(newtransaction);
+        res.json({note: `transaction will be add  in block ${blockIndex}.`});
+}); 
 
- const blockindex =  Vegawallet.creatnewtransaction(req.body.amount, req.body.sender, req.body.recipient);
-    res.json({note: `Transacton will be added in block ${blockindex}`});
-});
+
+
+    app.post('/transaction/broadcast', function(req,res){
+        const newTransaction = Vegawallet.creatNewTransaction(req.body.amount, req.body.sender, req.body.recipient)
+        Vegawallet.AddTransactionToPendingTransactions(newTransaction);
+
+        const requestPromises= [];
+        Vegawallet.netWorkNodes.forEach(netWorkNodeUrl => {
+            const requestOptions={
+                uri: netWorkNodeUrl +'/transaction',
+                method: 'POST',
+                body: newTransaction,
+                json: true
+            };
+            requestPromises.push(rp(requestOptions));
+        });
+        Promise.all(requestPromises)
+        .then(data =>{
+            res.json({note:' transaction created and broadcast seccessfilly.'});
+        });
+    });
+
+
 
 
 
@@ -40,13 +64,43 @@ app.use (bodyparser.urlencoded({extended:false}));
         };
         const nonce = Vegawallet.proofofwork(previousBlockHash, currentBlockData);
         const blockhash =Vegawallet.hashBlock(previousBlockHash, currentBlockData,nonce); 
-        Vegawallet.creatnewtransaction(20,"00",nodeID);
+        //Vegawallet.creatnewtransaction(20,"00",nodeID);
         const newBlock = Vegawallet.creatNewBlock(nonce, previousBlockHash, blockhash);
-        res.json({
-            note: "new block mined successfuly",
-            block: newBlock
+        const requestPromises = [];
+        Vegawallet.netWorkNodes.forEach(netWorkNodeUrl =>{
+            const requestOptions = {
+             
+                uri: netWorkNodeUrl + '/recive-new-block',
+                method:'POST',
+                body:{newBlock: newBlock},
+                json: true
+            };
+            requestPromises.push(rp(requestOptions)); //win na3mlo request traj3inna promise
         });
+        Promise.all(requestPromises)
+            .then(data =>{
+                const requestOptions ={
+                uri: Vegawallet.currentNodeUrl + '/transaction/broadcast',
+                method: 'POST',
+                body:{
+                    amount: 20,
+                    sender:"00",
+                    recipient:nodeAdress
+
+                    },
+                json: true
+                };
+            return rp(requestOptions);
+            })
+            .then(data=>{       
+                res.json({
+                    note: "new block mined successfuly",
+                    block: newBlock
+            
+                });
+            });
     });
+
 
 
 
@@ -91,6 +145,9 @@ app.use (bodyparser.urlencoded({extended:false}));
 
 
 
+
+
+
     //recive and register a node with the network
 
     app.post('/register-node', function(req, res) {
@@ -102,17 +159,25 @@ app.use (bodyparser.urlencoded({extended:false}));
     });
 
 
+
+
+
+
+
     //register multupile nodes at ones 
         app.post('/register-nodes-bulk', function(req,res){
-            const allnetWorkNodes = req.body.allnetWorkNodes;
-            allnetWorkNodes.forEach(netWorkNodeUrl=> {
+            const allNetWorkNodes = req.body.allNetWorkNodes;
+            allNetWorkNodes.forEach(netWorkNodeUrl=> {
             const nodeNoteAlreadyPresent =  Vegawallet.netWorkNodes.indexOf(netWorkNodeUrl) == -1 ;
             const notCurrentNode = Vegawallet.currentNodeUrl !== netWorkNodeUrl;       
                 if (nodeNoteAlreadyPresent && notCurrentNode) Vegawallet.netWorkNodes.push(netWorkNodeUrl);
             });
         res.json({ note: 'bulk registration successfuly.'});
 
-});
+    });
+
+
+
 
 
 

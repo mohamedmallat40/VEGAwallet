@@ -3,7 +3,7 @@ const currentNodeUrl = process.argv[3];
 const uuid = require('uuid/v1');
 
 
-function Blockchain() {
+ function Blockchain() {
     this.chain = [];
     this.pendingtransaction= [];
     this.currentNodeUrl=currentNodeUrl;
@@ -31,24 +31,22 @@ function Blockchain() {
     return this.chain[this.chain.length -1]; // fonction trajja3 ekher block
    };
 
-  Blockchain.prototype.creatnewtransaction = function(amount, sender, recipient){
-    const newtransaction = {
+  Blockchain.prototype.creatNewTransaction = function(amount, sender, recipient){
+    const newTransaction = {
       amount: amount, //9adeh chyab3eth
       sender: sender, // address mta3 ly chyab3eth
-      recipient: recipient,
-      transactionID: uuid().split('_').join('_') // add mta3 li chye9bel
+      recipient: recipient, // add mta3 li chye9bel
+      transactionID: uuid().split('_').join('') 
     };
 
-    return newtransaction;
+    return newTransaction;
 
-    /* this.pendingtransaction.push(newtransaction); // pending transactions mazelou mahoumchy validated yet
-      return this.getlastblock()['index'] + 1; */
-   };
-    Blockchain.prototype.AddTransactionToPendingTransactions = function(transactionObj){
-      this.pendingtransaction= push(pendingtransaction);
+    };
+     Blockchain.prototype.AddTransactionToPendingTransactions = function(transactionObj){
+        this.pendingtransaction.push(transactionObj);
+        return this.getlastblock()['index'] +1;
 
-
-    }
+    };
 
 
 
