@@ -23,12 +23,14 @@ app.get('/blockchain', function (req, res) {
 
 //creat a new transaction
     app.post('/transaction', function (req, res){
-    const newtransaction= req.body;
-    const blockIndex = Vegawallet.addTransactionToPendingTransactions(newtransaction);
+    const newTransaction= req.body;
+    const blockIndex = Vegawallet.addTransactionToPendingTransactions(newTransaction);
         res.json({note: `transaction will be add  in block ${blockIndex}.`});
 }); 
 
 
+
+// broadcast transaction
 
     app.post('/transaction/broadcast', function(req,res){
         const newTransaction = Vegawallet.createNewTransaction(req.body.amount, req.body.sender, req.body.recipient)
@@ -36,7 +38,7 @@ app.get('/blockchain', function (req, res) {
 
         const requestPromises= [];
         Vegawallet.networkNodes.forEach(netWorkNodeUrl => {
-            const requestOptions={
+            const requestOptions = {
                 uri: netWorkNodeUrl +'/transaction',
                 method: 'POST',
                 body: newTransaction,
@@ -122,8 +124,7 @@ app.get('/mine', function(req, res) {
                 note:'new block received and accepted',
                 newBlock: newBlock
             });
-        }  
-         else{
+        }  else {
             res.json({
                 note:'new block rejected',
                 newBlock: newBlock
@@ -245,9 +246,47 @@ app.post('/register-and-broadcast-node', function(req, res) {
          });
     });
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////  Block explorer  /////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+
+    app.get ('/block/:blockHash', function(req,res){
+        const blockHash = req.params.blockHash;
+        const correctBlock = Vegawallet.getBlock(blockHash);
+        res.json({
+            block: correctBlock
+        });
+    });
 
 
 
+
+    app.get ('/transaction/:transactionID', function(req,res){
+        const transactionID = req.params.transactionID;
+        const transactionData = Vegawallet.getTransaction(transactionID);
+            res.json({
+                transaction: transactionData.transaction,
+                block: transactionData.block
+            });
+    });     
+
+
+
+    app.get ('/adress/:adress', function(req,res){
+
+        const adress = req.params.transactionID;
+        const adressData = Vegawallet.getAddressData(adress);
+        res.json({
+            adressData: adressData
+        });
+    }); 
+
+
+
+    app.get('/block-explorer', function(req, res){
+        res.sendFile('./block-explorer/explorer.html',{ root: __dirname});
+    });
 
 
 

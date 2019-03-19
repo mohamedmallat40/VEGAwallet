@@ -1,3 +1,5 @@
+//Copyright (c) 2019-mohamed-mallat 
+
 const sha256 = require('sha256');
 const currentNodeUrl = process.argv[3];
 const uuid = require('uuid/v1');
@@ -63,7 +65,7 @@ Blockchain.prototype.hashBlock = function(previousBlockHash, currentBlockData, n
 Blockchain.prototype.proofOfWork = function(previousBlockHash, currentBlockData) {
 	let nonce = 0;
 	let hash = this.hashBlock(previousBlockHash, currentBlockData, nonce);
-	while (hash.substring(0, 4) !== '0000') {
+	while (hash.substring(0,6) !== 'AFYAMM') {
 		nonce++;
 		hash = this.hashBlock(previousBlockHash, currentBlockData, nonce);
 	}
@@ -96,33 +98,43 @@ Blockchain.prototype.chainIsValid = function(Blockchain) {
 };
 
 
-Blockchain.prototype.getBlock = function(blockHash) {
-	let correctBlock = null;
-	this.chain.forEach(block => {
-		if (block.hash === blockHash) correctBlock = block;
-	});
-	return correctBlock;
-};
 
 
-Blockchain.prototype.getTransaction = function(transactionId) {
-	let correctTransaction = null;
-	let correctBlock = null;
-
-	this.chain.forEach(block => {
-		block.transactions.forEach(transaction => {
-			if (transaction.transactionId === transactionId) {
-				correctTransaction = transaction;
-				correctBlock = block;
-			};
+	Blockchain.prototype.getBlock = function(blockHash){
+		let correctBlock = null;
+		this.chain.forEach(block =>{
+			if(block.hash === blockHash) correctBlock = block;
 		});
-	});
-
-	return {
-		transaction: correctTransaction,
-		block: correctBlock
+		return correctBlock;
 	};
-};
+
+
+
+
+
+
+
+
+	Blockchain.prototype.getTransaction = function(transactionId){
+			let correctTransaction = null;
+			let correctBlock = null;
+			this.chain.forEach(block =>{
+				block.transactions.forEach(transaction => {
+					if	(transaction.transactionId === transactionId){
+						correctTransaction = transaction;
+						correctBlock = block;
+					};
+				});
+			});
+			return {
+				transaction: correctTransaction,
+				block: correctBlock
+			};
+		};
+
+
+
+
 
 
 Blockchain.prototype.getAddressData = function(address) {
